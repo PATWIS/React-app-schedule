@@ -1,87 +1,128 @@
 import React from "react";
-import Team from "../models/Team";
 
 const styles = {
   fontFamily: "sans-serif",
-  textAlign: "center"
+  textAlign: "center",
+  scoreResult: {
+    width: 20,
+    margin: 5
+  }
 };
 
 export class Schedule extends React.Component {
   state = {
     teams: [],
-    games: []
+    fixtures: []
   };
 
-  componentWillReceiveProps(nextProps) {
-    let total;
-    if (this.props.teams.length % 2 === 0) {
-      total = this.props.teams.length - 1;
-    } else {
-      total = this.props.teams.length;
-    }
+  setScore(fixtureId, gameId, event) {
+    let value = event.target.value;
+    let name = event.target.name;
 
-    this.setState({
-      teams: nextProps.teams,
-      total: total
+    this.setState(prevState => {
+      prevState.fixtures
+        .find(f => f.id === fixtureId)
+        .games.find(g => g.id === gameId)[name] = value;
+      return {
+        ...prevState
+      };
     });
 
-    // alert('willReceive')
-
-    this.creategames();
+    console.log(this.state.fixtures);
   }
 
-  creategames = () => {
-    // let { teams } = this.state;
-
-    let teams = Array.apply(0, Array(this.state.teams.length)).map(
-      (_, i) => new Team({ id: i + 1 })
-    );
+  _createGames = () => {
+    let { teams } = this.props;
+    // let teams = Array.apply(0, Array(this.state.teams.length)).map(
+    //   (_, i) => new Team({ id: i + 1 })
+    // );
 
     let fixtures = [];
+    let gameNumber = 1;
     for (let f = 0; f < teams.length - 1; f++) {
       let pp = teams.slice(),
         games = [],
-        count = Math.floor(pp.length / 2);
-      while (count--) games.push([pp.shift(), pp.pop()]);
+        count = Math.floor(pp.length / 2),
+        gameId = 0;
+
+      while (count--)
+        games.push({
+          id: gameNumber++,
+          team1: pp.shift(),
+          team2: pp.pop(),
+          team1Goals: "",
+          team2Goals: ""
+        });
+
       fixtures.push({ id: f + 1, games });
-      teams = [new Team({ id: 1 })].concat(teams.slice(2), [teams[1]]);
+      teams = [teams[0]].concat(teams.slice(2), [teams[1]]);
     }
     this.setState({
+      teams,
       fixtures
     });
   };
 
-  componentDidMount() {
-    this.setState({
-      teams: this.props.teams
+  setResult = (fixtureId, game) => {
+    this.setState(prevState => {
+      prevState.fixtures
+        .find(f => f.id === fixtureId)
+        .games.find(g => g.id === game.id).resultIsSet = true;
+      return {
+        fixtures: prevState.fixtures
+      };
     });
+
+    this.props.handler(game);
+  };
+
+  componentDidMount() {
+    this._createGames();
   }
 
   render() {
-    let { fixtures, teams, total, gamesbyFixture } = this.state;
+    let { fixtures } = this.state;
     return (
       <div style={styles}>
-        {teams.length > 0 && (
-          <div>
-            {" "}
-            <h2>fixtures</h2>
-            <ul>
-              {fixtures.map(f => (
-                <li key={f.id}>
-                  fixture no {f.id}
-                  <ol>
-                    {f.games.map(g => (
-                      <li key={g.id}>
-                        {" "}
-                        {g[0].id} vs {g[1].id}{" "}
-                      </li>
-                    ))}
-                  </ol>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+        <h2>fixtures</h2>
+        <ul>
+          {fixtures.map(f => (
+            <li key={f.id}>
+              fixture no {f.id}
+              <ol>
+                {f.games.map(g => (
+                  <li key={g.id}>
+                    {" "}
+                    {g.team1.name} vs {g.team2.name}{" "}
+                    <input
+                      disabled={g.resultIsSet}
+                      name="team1Goals"
+                      onChange={this.setScore.bind(this, f.id, g.id)}
+                      value={g.team1Goals}
+                      style={styles.scoreResult}
+                    />
+                    :{""}
+                    <input
+                      disabled={g.resultIsSet}
+                      name="team2Goals"
+                      onChange={this.setScore.bind(this, f.id, g.id)}
+                      value={g.team2Goals}
+                      style={styles.scoreResult}
+                    />
+                    {!g.resultIsSet && (
+                      <button
+                        disabled={g.team1Goals === "" || g.team2Goals === ""}
+                        onClick={this.setResult.bind(this, f.id, g)}
+                      >
+                        set
+                      </button>
+                    )}
+                  </li>
+                ))}
+              </ol>
+            </li>
+          ))}
+        </ul>
       </div>
     );
   }

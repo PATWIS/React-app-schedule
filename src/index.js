@@ -2,6 +2,7 @@ import React from "react";
 import { render } from "react-dom";
 import Team from "./models/Team";
 import { Schedule } from "./components/Schedule";
+import { Teams } from "./components/Teams";
 
 const styles = {
   fontFamily: "sans-serif",
@@ -16,34 +17,100 @@ class App extends React.Component {
   };
 
   handleChange = event => {
-    this.setState({ numOfTeams: event.target.value });
+    // let { numOfTeams, teams } = this.state;
+    // let value = event.target.value;
+
+    // var toAdd = this._createTeams(value).filter(obj => {
+    //   return !teams.some(obj2 => {
+    //     return obj.id === obj2.id;
+    //   });
+    // });
+
+    // var toRemove = teams.filter(obj => {
+    //   return !this._createTeams(value).some(obj2 => {
+    //     return obj.id === obj2.id;
+    //   });
+    // });
+
+    // this.setState(prevState => {
+    //   return {
+    //     numOfTeams: value,
+    //     teams: [...prevState.teams, ...toAdd]
+    //   };
+    // });
+
+    this.setState({
+      numOfTeams: event.target.value,
+      teams: this._createTeams(event.target.value)
+    });
   };
 
   handleSubmit = event => {
-    let { numOfTeams, teams } = this.state;
-
-    for (let i = 0; i < numOfTeams; i++) {
-      teams.push(new Team({ id: i + 1, name: `Team ${i + 1}` }));
-    }
-
-    this.setState(prevState => {
-      prevState.teams.forEach(newTeam => {
-        prevState.teams.forEach(team => {
-          team.id !== newTeam.id &&
-            team.opponents.push({
-              name: newTeam.name,
-              opponentId: newTeam.id
-            });
-        });
-      });
-      return {
-        ...prevState,
-        teams: [...prevState.teams],
-        submitted: true
-      };
+    this.setState({
+      submitted: true
     });
 
     event.preventDefault();
+  };
+
+  componentDidMount() {
+    let { numOfTeams } = this.state;
+
+    this.setState({
+      teams: this._createTeams(numOfTeams)
+    });
+  }
+
+  _createTeams(howMany) {
+    let teams = [];
+    for (let i = 0; i < howMany; i++) {
+      teams.push(new Team({ id: i + 1, name: `Team ${i + 1}` }));
+    }
+    return teams;
+  }
+
+  setTeamName = (id, name) => {
+    let { teams } = this.state;
+    teams[id - 1].name = name;
+    this.setState({ teams });
+  };
+
+  _checkWhoWin(game) {
+    let winner;
+    switch (true) {
+      case game.team1Goals > game.team2Goals:
+        winner = game.team1.id;
+        break;
+      case game.team1Goals < game.team2Goals:
+        winner = game.team2.id;
+        break;
+      default:
+        break;
+    }
+    return winner;
+  }
+
+  _addGameResult(game, winner, teams) {
+    if (winner) {
+      teams.find(t => t.id === winner).totalPoints += 3;
+    } else {
+      teams.find(t => t.id === game.team1.id).totalPoints += 1;
+      teams.find(t => t.id === game.team2.id).totalPoints += 1;
+    }
+
+    teams.find(t => t.id === game.team1.id).matches += 1;
+    teams.find(t => t.id === game.team2.id).matches += 1;
+  }
+
+  setResult = game => {
+    let winner = this._checkWhoWin(game);
+
+    this.setState(prevState => {
+      this._addGameResult(game, winner, prevState.teams);
+      return {
+        teams: prevState.teams
+      };
+    });
   };
 
   render() {
@@ -64,7 +131,8 @@ class App extends React.Component {
             <input type="submit" value="Create a schedule" />
           </form>
         )}
-        <Schedule teams={teams} />
+        {teams.length > 0 && <Teams teams={teams} handler={this.setTeamName} />}
+        {submitted && <Schedule teams={teams} handler={this.setResult} />}
       </div>
     );
   }
