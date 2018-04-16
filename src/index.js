@@ -98,9 +98,9 @@ class App extends React.Component {
           el.id === t &&
           Object.assign(el, {
             totalPoints:
-              winner === el.id
+              winner === el.id // check if we are the winner.
                 ? el.totalPoints + 3
-                : !winner ? el.totalPoints + 1 : el.totalPoints,
+                : !winner && el.totalPoints + 1, // if winner is not exist, we draw the match and get 1 point, otherwise we lost :(
             matches: el.matches + 1,
             scoredGoals:
               el.scoredGoals +
