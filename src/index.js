@@ -91,27 +91,26 @@ class App extends React.Component {
   }
 
   _addGameResult(game, winner, teams) {
-    if (winner) {
-      teams.find(t => t.id === winner).totalPoints += 3;
-    } else {
-      teams.find(t => t.id === game.team1.id).totalPoints += 1;
-      teams.find(t => t.id === game.team2.id).totalPoints += 1;
-    }
-
-    teams.find(t => t.id === game.team1.id).matches += 1;
-    teams.find(t => t.id === game.team1.id).scoredGoals += parseInt(
-      game.team1Goals
-    );
-    teams.find(t => t.id === game.team1.id).lostGoals += parseInt(
-      game.team2Goals
-    );
-    teams.find(t => t.id === game.team2.id).matches += 1;
-    teams.find(t => t.id === game.team2.id).scoredGoals += parseInt(
-      game.team2Goals
-    );
-    teams.find(t => t.id === game.team2.id).lostGoals += parseInt(
-      game.team1Goals
-    );
+    const gamePair = [game.team1.id, game.team2.id];
+    gamePair.forEach((t, i) => {
+      teams.map(
+        el =>
+          el.id === t &&
+          Object.assign(el, {
+            totalPoints:
+              winner === el.id
+                ? el.totalPoints + 3
+                : !winner ? el.totalPoints + 1 : el.totalPoints,
+            matches: el.matches + 1,
+            scoredGoals:
+              el.scoredGoals +
+              parseInt(i === 0 ? game.team1Goals : game.team2Goals),
+            lostGoals:
+              el.lostGoals +
+              parseInt(i === 0 ? game.team2Goals : game.team1Goals)
+          })
+      );
+    });
   }
 
   setResult = game => {
