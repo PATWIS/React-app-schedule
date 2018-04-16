@@ -5,7 +5,8 @@ const styles = {
   textAlign: "center",
   scoreResult: {
     width: 20,
-    margin: 5
+    margin: 5,
+    textAlign: "center"
   }
 };
 
@@ -93,15 +94,15 @@ export class Schedule extends React.Component {
                 {f.games.map(g => (
                   <li key={g.id}>
                     {" "}
-                    {g.team1.name} vs {g.team2.name}{" "}
+                    {g.team1.name}{" "}
                     <input
                       disabled={g.resultIsSet}
                       name="team1Goals"
                       onChange={this.setScore.bind(this, f.id, g.id)}
                       value={g.team1Goals}
                       style={styles.scoreResult}
-                    />
-                    :{""}
+                    />{" "}
+                    :{" "}
                     <input
                       disabled={g.resultIsSet}
                       name="team2Goals"
@@ -109,6 +110,7 @@ export class Schedule extends React.Component {
                       value={g.team2Goals}
                       style={styles.scoreResult}
                     />
+                    {g.team2.name}{" "}
                     {!g.resultIsSet && (
                       <button
                         disabled={g.team1Goals === "" || g.team2Goals === ""}

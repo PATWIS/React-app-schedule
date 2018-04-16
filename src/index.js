@@ -99,7 +99,19 @@ class App extends React.Component {
     }
 
     teams.find(t => t.id === game.team1.id).matches += 1;
+    teams.find(t => t.id === game.team1.id).scoredGoals += parseInt(
+      game.team1Goals
+    );
+    teams.find(t => t.id === game.team1.id).lostGoals += parseInt(
+      game.team2Goals
+    );
     teams.find(t => t.id === game.team2.id).matches += 1;
+    teams.find(t => t.id === game.team2.id).scoredGoals += parseInt(
+      game.team2Goals
+    );
+    teams.find(t => t.id === game.team2.id).lostGoals += parseInt(
+      game.team1Goals
+    );
   }
 
   setResult = game => {

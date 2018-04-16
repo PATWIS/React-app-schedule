@@ -42,6 +42,8 @@ export class Teams extends React.Component {
                 onChange={this.handler.bind(this, t.id)}
               />
               Total Points: {t.totalPoints}
+              Scored: {t.scoredGoals}
+              Losted: {t.lostGoals}
             </li>
           ))}
         </ol>
