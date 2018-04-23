@@ -5,6 +5,10 @@
   "keywords": [],
   "main": "src/index.js",
   "dependencies": {
+    "dns": "0.2.2",
+    "email-templates": "3.5.2",
+    "nodemailer": "4.6.4",
+    "pug": "2.0.3",
     "react": "16.2.0",
     "react-dom": "16.2.0",
     "react-scripts": "1.1.0"

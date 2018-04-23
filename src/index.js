@@ -4,6 +4,9 @@ import Team from "./models/Team";
 import { Schedule } from "./components/Schedule";
 import { Teams } from "./components/Teams";
 
+// import * as nodemailer from "nodemailer";
+// import * as Email from "email-templates";
+
 const styles = {
   fontFamily: "sans-serif",
   textAlign: "center"
@@ -17,28 +20,6 @@ class App extends React.Component {
   };
 
   handleChange = event => {
-    // let { numOfTeams, teams } = this.state;
-    // let value = event.target.value;
-
-    // var toAdd = this._createTeams(value).filter(obj => {
-    //   return !teams.some(obj2 => {
-    //     return obj.id === obj2.id;
-    //   });
-    // });
-
-    // var toRemove = teams.filter(obj => {
-    //   return !this._createTeams(value).some(obj2 => {
-    //     return obj.id === obj2.id;
-    //   });
-    // });
-
-    // this.setState(prevState => {
-    //   return {
-    //     numOfTeams: value,
-    //     teams: [...prevState.teams, ...toAdd]
-    //   };
-    // });
-
     this.setState({
       numOfTeams: event.target.value,
       teams: this._createTeams(event.target.value)
@@ -100,7 +81,7 @@ class App extends React.Component {
             totalPoints:
               winner === el.id // check if we are the winner.
                 ? el.totalPoints + 3
-                : !winner && el.totalPoints + 1, // if winner is not exist, we draw the match and get 1 point, otherwise we lost :(
+                : !winner ? el.totalPoints + 1 : el.totalPoints, // if winner is not exist, we draw the match and get 1 point, otherwise we lost :(
             matches: el.matches + 1,
             scoredGoals:
               el.scoredGoals +
@@ -129,6 +110,7 @@ class App extends React.Component {
     return (
       <div style={styles}>
         <h1>Fixtures generator</h1>
+
         {!submitted && (
           <form onSubmit={this.handleSubmit}>
             <label>How many teams? </label>
@@ -142,7 +124,11 @@ class App extends React.Component {
             <input type="submit" value="Create a schedule" />
           </form>
         )}
-        {teams.length > 0 && <Teams teams={teams} handler={this.setTeamName} />}
+        {teams.length > 1 ? (
+          <Teams teams={teams} handler={this.setTeamName} />
+        ) : (
+          <p>select at least 2 teams</p>
+        )}
         {submitted && <Schedule teams={teams} handler={this.setResult} />}
       </div>
     );
