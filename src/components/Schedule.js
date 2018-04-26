@@ -79,8 +79,8 @@ export class Schedule extends React.Component {
 
   simulateResult = (fixtureId, game) => {
     Object.assign(game, {
-      team1Goals: ((Math.random() * 3) | 0) + 1,
-      team2Goals: ((Math.random() * 3) | 0) + 1,
+      team1Goals: (Math.random() * 3) | 0,
+      team2Goals: (Math.random() * 3) | 0,
       resultIsSet: true
     });
 

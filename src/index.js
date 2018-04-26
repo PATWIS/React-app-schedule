@@ -3,6 +3,7 @@ import { render } from "react-dom";
 import Team from "./models/Team";
 import { Schedule } from "./components/Schedule";
 import { Teams } from "./components/Teams";
+import { Table } from "./components/Table";
 
 // import * as nodemailer from "nodemailer";
 // import * as Email from "email-templates";
@@ -20,9 +21,11 @@ class App extends React.Component {
   };
 
   handleChange = event => {
+    const teams = this._createTeams(event.target.value);
+
     this.setState({
       numOfTeams: event.target.value,
-      teams: this._createTeams(event.target.value)
+      teams: [...this.state.teams, ...teams]
     });
   };
 
@@ -45,7 +48,7 @@ class App extends React.Component {
   _createTeams(howMany) {
     let teams = [];
     for (let i = 0; i < howMany; i++) {
-      teams.push(new Team({ id: i + 1, name: `Team ${i + 1}` }));
+      teams = [...teams, new Team({ id: i + 1, name: `Team ${i + 1}` })];
     }
     return teams;
   }
@@ -109,6 +112,7 @@ class App extends React.Component {
     let { teams, submitted } = this.state;
     return (
       <div style={styles}>
+        <Table teams={teams} />
         <h1>Fixtures generator</h1>
 
         {!submitted && (
@@ -118,7 +122,7 @@ class App extends React.Component {
             <select value={this.state.numOfTeams} onChange={this.handleChange}>
               <option value="4">4</option>
               <option value="5">5</option>
-              <option value="6">6</option>
+              <option value="14">14</option>
             </select>
 
             <input type="submit" value="Create a schedule" />
