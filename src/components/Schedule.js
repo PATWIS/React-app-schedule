@@ -77,6 +77,25 @@ export class Schedule extends React.Component {
     this.props.handler(game);
   };
 
+  simulateResult = (fixtureId, game) => {
+    Object.assign(game, {
+      team1Goals: ((Math.random() * 3) | 0) + 1,
+      team2Goals: ((Math.random() * 3) | 0) + 1,
+      resultIsSet: true
+    });
+
+    this.setState(prevState => {
+      prevState.fixtures
+        .find(f => f.id === fixtureId)
+        .games.map(g => g.id === game.id && game);
+      return {
+        fixtures: prevState.fixtures
+      };
+    });
+
+    this.props.handler(game);
+  };
+
   componentDidMount() {
     this._createGames();
   }
@@ -117,6 +136,11 @@ export class Schedule extends React.Component {
                         onClick={this.setResult.bind(this, f.id, g)}
                       >
                         set
+                      </button>
+                    )}
+                    {!g.resultIsSet && (
+                      <button onClick={() => this.simulateResult(f.id, g)}>
+                        simulate
                       </button>
                     )}
                   </li>
