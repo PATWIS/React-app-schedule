@@ -15,12 +15,16 @@ export class Table extends React.Component {
           <tbody>
             {teams
               .sort((a, b) => {
+                if (a.totalPoints === 0 && b.totalPoints === 0) {
+                  return a.id - b.id;
+                }
+
                 if (a.totalPoints === b.totalPoints) {
                   return (
-                    a.scoredGoals - a.lostGoals < b.scoredGoals - a.lostGoals
+                    b.scoredGoals - b.lostGoals - (a.scoredGoals - a.lostGoals)
                   );
                 }
-                return a.totalPoints < b.totalPoints;
+                return b.totalPoints - a.totalPoints;
               })
               .map((t, i) => (
                 <tr>

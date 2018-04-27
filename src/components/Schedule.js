@@ -79,8 +79,8 @@ export class Schedule extends React.Component {
 
   simulateResult = (fixtureId, game) => {
     Object.assign(game, {
-      team1Goals: (Math.random() * 3) | 0,
-      team2Goals: (Math.random() * 3) | 0,
+      team1Goals: (Math.random() * 8) | 0,
+      team2Goals: (Math.random() * 8) | 0,
       resultIsSet: true
     });
 
@@ -96,6 +96,19 @@ export class Schedule extends React.Component {
     this.props.handler(game);
   };
 
+  simulateAllGamesInFixture = (fixtureId, games) => {
+    games.forEach(game => {
+      this.simulateResult(fixtureId, game);
+    });
+
+    this.setState(prevState => {
+      prevState.fixtures.find(f => f.id === fixtureId).completed = true;
+      return {
+        fixtures: prevState.fixtures
+      };
+    });
+  };
+
   componentDidMount() {
     this._createGames();
   }
@@ -109,6 +122,13 @@ export class Schedule extends React.Component {
           {fixtures.map(f => (
             <li key={f.id}>
               fixture no {f.id}
+              {!f.completed && (
+                <button
+                  onClick={() => this.simulateAllGamesInFixture(f.id, f.games)}
+                >
+                  simulate all games
+                </button>
+              )}
               <ol>
                 {f.games.map(g => (
                   <li key={g.id}>

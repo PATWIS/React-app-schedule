@@ -25,7 +25,7 @@ class App extends React.Component {
 
     this.setState({
       numOfTeams: event.target.value,
-      teams: [...this.state.teams, ...teams]
+      teams
     });
   };
 
@@ -48,7 +48,7 @@ class App extends React.Component {
   _createTeams(howMany) {
     let teams = [];
     for (let i = 0; i < howMany; i++) {
-      teams = [...teams, new Team({ id: i + 1, name: `Team ${i + 1}` })];
+      teams.push(new Team({ id: i + 1, name: `Team ${i + 1}` }));
     }
     return teams;
   }

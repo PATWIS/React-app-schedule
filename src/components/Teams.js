@@ -35,17 +35,18 @@ export class Teams extends React.Component {
       <div style={styles}>
         <h2>Teams</h2>
         <ol>
-          {teams.map(t => (
-            <li key={t.id}>
-              <input
-                value={teams[t.id - 1].name}
-                onChange={this.handler.bind(this, t.id)}
-              />
-              Total Points: {t.totalPoints}
-              Scored: {t.scoredGoals}
-              Losted: {t.lostGoals}
-            </li>
-          ))}
+          {teams
+            .sort((a, b) => {
+              return a.id - b.id;
+            })
+            .map(t => (
+              <li key={t.id}>
+                <input
+                  value={teams[t.id - 1].name}
+                  onChange={this.handler.bind(this, t.id)}
+                />
+              </li>
+            ))}
         </ol>
       </div>
     );
