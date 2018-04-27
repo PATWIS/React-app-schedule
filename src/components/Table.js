@@ -11,6 +11,15 @@ export class Table extends React.Component {
         <table>
           <tr>
             <th>#</th>
+            <th>Name</th>
+            <th>Total Matches</th>
+            <th>Wins</th>
+            <th>Draws</th>
+            <th>Losts</th>
+            <th>Scored Goals</th>
+            <th>Lost Goals</th>
+            <th>Bilans</th>
+            <th>POINTS</th>
           </tr>
           <tbody>
             {teams
@@ -31,6 +40,9 @@ export class Table extends React.Component {
                   <td>{i + 1}</td>
                   <td>{t.name}</td>
                   <td>{t.matches}</td>
+                  <td>{t.wins}</td>
+                  <td>{t.draws}</td>
+                  <td>{t.losts}</td>
                   <td>{t.scoredGoals}</td>
                   <td>{t.lostGoals}</td>
                   <td>
@@ -41,7 +53,9 @@ export class Table extends React.Component {
                     )}
                   </td>
 
-                  <td>{t.totalPoints}</td>
+                  <td>
+                    <b>{t.totalPoints}</b>
+                  </td>
                 </tr>
               ))}
           </tbody>

@@ -7,5 +7,8 @@ export default class Team {
     this.scoredGoals = team.scoredGoals || 0;
     this.lostGoals = team.lostGoals || 0;
     this.matches = team.matches || 0;
+    this.wins = team.wins || 0;
+    this.draws = team.draws || 0;
+    this.losts = team.losts || 0;
   }
 }

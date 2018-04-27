@@ -91,7 +91,10 @@ class App extends React.Component {
               parseInt(i === 0 ? game.team1Goals : game.team2Goals),
             lostGoals:
               el.lostGoals +
-              parseInt(i === 0 ? game.team2Goals : game.team1Goals)
+              parseInt(i === 0 ? game.team2Goals : game.team1Goals),
+            wins: winner === el.id ? el.wins + 1 : el.wins,
+            losts: winner && winner !== el.id ? el.losts + 1 : el.losts,
+            draws: !winner ? el.draws + 1 : el.draws
           })
       );
     });

@@ -98,7 +98,7 @@ export class Schedule extends React.Component {
 
   simulateAllGamesInFixture = (fixtureId, games) => {
     games.forEach(game => {
-      this.simulateResult(fixtureId, game);
+      !game.resultIsSet && this.simulateResult(fixtureId, game);
     });
 
     this.setState(prevState => {
