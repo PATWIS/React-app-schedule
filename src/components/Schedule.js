@@ -1,4 +1,5 @@
 import React from "react";
+import robin from "roundrobin";
 
 const styles = {
   fontFamily: "sans-serif",
@@ -28,39 +29,50 @@ export class Schedule extends React.Component {
         ...prevState
       };
     });
-
-    console.log(this.state.fixtures);
   }
 
-  _createGames = () => {
+  _createFixtures = () => {
     let { teams } = this.props;
-    // let teams = Array.apply(0, Array(this.state.teams.length)).map(
-    //   (_, i) => new Team({ id: i + 1 })
-    // );
 
-    let fixtures = [];
-    let gameNumber = 1;
-    for (let f = 0; f < teams.length - 1; f++) {
-      let pp = teams.slice(),
-        games = [],
-        count = Math.floor(pp.length / 2),
-        gameId = 0;
+    let fixtures = robin(teams.length, teams).map(function(games, i) {
+      return {
+        id: i + 1,
+        games: games.map(function(game, index) {
+          return {
+            id: index + 1,
+            team1: game[0],
+            team2: game[1],
+            team1Goals: "",
+            team2Goals: ""
+          };
+        })
+      };
+    });
 
-      while (count--)
-        games.push({
-          id: gameNumber++,
-          team1: pp.shift(),
-          team2: pp.pop(),
-          team1Goals: "",
-          team2Goals: ""
-        });
+    let x = fixtures.length + 1;
+    let withRevange = [
+      ...fixtures,
+      ...robin(teams.length, teams)
+        .reverse()
+        .map(function(games, i) {
+          return {
+            id: x++,
+            games: games.map(function(game, index) {
+              return {
+                id: index + 1,
+                team1: game[1],
+                team2: game[0],
+                team1Goals: "",
+                team2Goals: ""
+              };
+            })
+          };
+        })
+    ];
 
-      fixtures.push({ id: f + 1, games });
-      teams = [teams[0]].concat(teams.slice(2), [teams[1]]);
-    }
     this.setState({
       teams,
-      fixtures
+      fixtures: withRevange
     });
   };
 
@@ -110,7 +122,7 @@ export class Schedule extends React.Component {
   };
 
   componentDidMount() {
-    this._createGames();
+    this._createFixtures();
   }
 
   render() {

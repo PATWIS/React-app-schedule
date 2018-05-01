@@ -112,7 +112,7 @@ class App extends React.Component {
   };
 
   render() {
-    let { teams, submitted } = this.state;
+    let { teams, submitted, numOfTeams } = this.state;
     return (
       <div style={styles}>
         <Table teams={teams} />
@@ -122,7 +122,8 @@ class App extends React.Component {
           <form onSubmit={this.handleSubmit}>
             <label>How many teams? </label>
 
-            <select value={this.state.numOfTeams} onChange={this.handleChange}>
+            <select value={numOfTeams} onChange={this.handleChange}>
+              <option value="3">3</option>
               <option value="4">4</option>
               <option value="5">5</option>
               <option value="14">14</option>
@@ -131,6 +132,9 @@ class App extends React.Component {
             <input type="submit" value="Create a schedule" />
           </form>
         )}
+
+        <p>games: {numOfTeams / 2 * (numOfTeams - 1)} </p>
+
         {teams.length > 1 ? (
           <Teams teams={teams} handler={this.setTeamName} />
         ) : (
