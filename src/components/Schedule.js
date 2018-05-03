@@ -32,8 +32,8 @@ export class Schedule extends React.Component {
   }
 
   _createFixtures = () => {
-    let { teams } = this.props;
-
+    let { teams, revange } = this.props;
+    revange = true;
     let fixtures = robin(teams.length, teams).map(function(games, i) {
       return {
         id: i + 1,
@@ -49,30 +49,27 @@ export class Schedule extends React.Component {
       };
     });
 
-    let x = fixtures.length + 1;
-    let withRevange = [
-      ...fixtures,
-      ...robin(teams.length, teams)
-        .reverse()
-        .map(function(games, i) {
-          return {
-            id: x++,
-            games: games.map(function(game, index) {
-              return {
-                id: index + 1,
-                team1: game[1],
-                team2: game[0],
-                team1Goals: "",
-                team2Goals: ""
-              };
-            })
-          };
-        })
-    ];
+    if (revange) {
+      let lastFixturesId = Math.max(...fixtures.map(f => f.id + 1));
+      fixtures = [
+        ...fixtures,
+        ...fixtures.reverse().map(f =>
+          Object.assign({}, f, {
+            id: lastFixturesId++,
+            games: f.games.map(g =>
+              Object.assign({}, g, {
+                team1: g.team2,
+                team2: g.team1
+              })
+            )
+          })
+        )
+      ];
+    }
 
     this.setState({
       teams,
-      fixtures: withRevange
+      fixtures: fixtures
     });
   };
 

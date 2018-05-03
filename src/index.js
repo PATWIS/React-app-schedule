@@ -17,16 +17,22 @@ class App extends React.Component {
   state = {
     numOfTeams: 4,
     submitted: false,
+    revange: false,
     teams: []
   };
 
   handleChange = event => {
-    const teams = this._createTeams(event.target.value);
-
-    this.setState({
-      numOfTeams: event.target.value,
-      teams
-    });
+    if (event.target.type === "checkbox") {
+      this.setState({
+        revange: event.target.checked
+      });
+    } else {
+      const teams = this._createTeams(event.target.value);
+      this.setState({
+        numOfTeams: event.target.value,
+        teams
+      });
+    }
   };
 
   handleSubmit = event => {
@@ -112,7 +118,7 @@ class App extends React.Component {
   };
 
   render() {
-    let { teams, submitted, numOfTeams } = this.state;
+    let { teams, submitted, numOfTeams, revange } = this.state;
     return (
       <div style={styles}>
         <Table teams={teams} />
@@ -128,12 +134,28 @@ class App extends React.Component {
               <option value="5">5</option>
               <option value="14">14</option>
             </select>
-
+            <input
+              type="checkbox"
+              value={revange}
+              onChange={this.handleChange}
+            />
             <input type="submit" value="Create a schedule" />
           </form>
         )}
 
-        <p>games: {numOfTeams / 2 * (numOfTeams - 1)} </p>
+        <p>
+          games:{" "}
+          {revange
+            ? numOfTeams / 2 * (numOfTeams - 1) * 2
+            : numOfTeams / 2 * (numOfTeams - 1)}{" "}
+        </p>
+        <p>
+          {numOfTeams % 2
+            ? revange ? numOfTeams * 2 : numOfTeams
+            : revange ? (numOfTeams - 1) * 2 : numOfTeams - 1}{" "}
+          rounds, each with{" "}
+          {numOfTeams % 2 ? (numOfTeams - 1) / 2 : numOfTeams / 2} games{" "}
+        </p>
 
         {teams.length > 1 ? (
           <Teams teams={teams} handler={this.setTeamName} />
