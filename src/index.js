@@ -3,6 +3,7 @@ import { render } from "react-dom";
 import Team from "./models/Team";
 import { Schedule } from "./components/Schedule";
 import { Teams } from "./components/Teams";
+import { Groups } from "./components/Groups";
 import { Table } from "./components/Table";
 
 // import * as nodemailer from "nodemailer";
@@ -16,21 +17,28 @@ const styles = {
 class App extends React.Component {
   state = {
     numOfTeams: 4,
+    numOfGroups: 2,
     submitted: false,
     revange: false,
+    typeOfTournament: "play-off",
     teams: []
   };
 
   handleChange = event => {
+    const name = event.target.name;
     if (event.target.type === "checkbox") {
       this.setState({
         revange: event.target.checked
       });
-    } else {
+    } else if (name === "numOfTeams") {
       const teams = this._createTeams(event.target.value);
       this.setState({
-        numOfTeams: event.target.value,
+        [name]: event.target.value,
         teams
+      });
+    } else {
+      this.setState({
+        [name]: event.target.value
       });
     }
   };
@@ -118,27 +126,68 @@ class App extends React.Component {
   };
 
   render() {
-    let { teams, submitted, numOfTeams, revange } = this.state;
+    let {
+      teams,
+      submitted,
+      numOfTeams,
+      numOfGroups,
+      revange,
+      typeOfTournament
+    } = this.state;
     return (
       <div style={styles}>
-        <Table teams={teams} />
+        {/*<Table teams={teams} />*/}
         <h1>Fixtures generator</h1>
 
         {!submitted && (
           <form onSubmit={this.handleSubmit}>
-            <label>How many teams? </label>
-
-            <select value={numOfTeams} onChange={this.handleChange}>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-              <option value="14">14</option>
-            </select>
-            <input
-              type="checkbox"
-              value={revange}
-              onChange={this.handleChange}
-            />
+            <div>
+              {" "}
+              <label>Type of tournament </label>
+              <select
+                name="typeOfTournament"
+                value={typeOfTournament}
+                onChange={this.handleChange}
+              >
+                <option value="groups&play-off">groups + play-off</option>
+                <option value="league">league</option>
+                <option value="play-off">play-off</option>
+              </select>
+            </div>
+            <div>
+              {" "}
+              <label>How many teams? </label>
+              <input
+                name="numOfTeams"
+                type="number"
+                min={2}
+                style={{ width: 40, textAlign: "center" }}
+                value={numOfTeams}
+                onChange={this.handleChange}
+              />
+            </div>
+            {typeOfTournament === "groups&play-off" && (
+              <div>
+                {" "}
+                <label>How many groups? </label>
+                <input
+                  name="numOfGroups"
+                  type="number"
+                  min={2}
+                  style={{ width: 40, textAlign: "center" }}
+                  value={numOfGroups}
+                  onChange={this.handleChange}
+                />
+              </div>
+            )}
+            <div>
+              <label>Revange? </label>
+              <input
+                type="checkbox"
+                value={revange}
+                onChange={this.handleChange}
+              />{" "}
+            </div>
             <input type="submit" value="Create a schedule" />
           </form>
         )}
@@ -157,11 +206,15 @@ class App extends React.Component {
           {numOfTeams % 2 ? (numOfTeams - 1) / 2 : numOfTeams / 2} games{" "}
         </p>
 
-        {teams.length > 1 ? (
-          <Teams teams={teams} handler={this.setTeamName} />
-        ) : (
-          <p>select at least 2 teams</p>
+        {typeOfTournament === "league" &&
+          teams.length > 1 && (
+            <Teams teams={teams} handler={this.setTeamName} />
+          )}
+
+        {typeOfTournament === "groups&play-off" && (
+          <Groups teams={teams} numOfGroups={numOfGroups} />
         )}
+
         {submitted && <Schedule teams={teams} handler={this.setResult} />}
       </div>
     );

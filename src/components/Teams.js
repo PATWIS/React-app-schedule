@@ -42,7 +42,7 @@ export class Teams extends React.Component {
             .map(t => (
               <li key={t.id}>
                 <input
-                  value={teams[t.id - 1].name}
+                  value={teams.find(team => team.id === t.id).name}
                   onChange={this.handler.bind(this, t.id)}
                 />
               </li>

@@ -9,18 +9,20 @@ export class Table extends React.Component {
     return (
       <div>
         <table>
-          <tr>
-            <th>#</th>
-            <th>Name</th>
-            <th>Total Matches</th>
-            <th>Wins</th>
-            <th>Draws</th>
-            <th>Losts</th>
-            <th>Scored Goals</th>
-            <th>Lost Goals</th>
-            <th>Bilans</th>
-            <th>POINTS</th>
-          </tr>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Total Matches</th>
+              <th>Wins</th>
+              <th>Draws</th>
+              <th>Losts</th>
+              <th>Scored Goals</th>
+              <th>Lost Goals</th>
+              <th>Bilans</th>
+              <th>POINTS</th>
+            </tr>
+          </thead>
           <tbody>
             {teams
               .sort((a, b) => {
