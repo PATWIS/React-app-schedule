@@ -1,5 +1,7 @@
 import React from "react";
 import { Teams } from "./Teams";
+import { Schedule } from "./Schedule";
+import { Table } from "./Table";
 
 const styles = {
   fontFamily: "sans-serif",
@@ -9,6 +11,10 @@ const styles = {
 export class Groups extends React.Component {
   state = {
     groups: []
+  };
+
+  setResult = game => {
+    this.props.handler(game);
   };
 
   _splitUp(arr, n) {
@@ -50,6 +56,7 @@ export class Groups extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState({
+      submitted: nextProps.submitted,
       groups: this._createGroups(nextProps.numOfGroups, [...nextProps.teams])
     });
   }
@@ -61,7 +68,7 @@ export class Groups extends React.Component {
   }
 
   render() {
-    let { groups } = this.state;
+    let { groups, submitted } = this.state;
     return (
       <div style={styles}>
         <h2>Groups</h2>
@@ -69,6 +76,8 @@ export class Groups extends React.Component {
           <li key={g.id}>
             {" "}
             {g.name} <Teams teams={g.teams} handler={this.setTeamName} />
+            {<Table teams={g.teams} />}
+            {submitted && <Schedule teams={g.teams} handler={this.setResult} />}
           </li>
         ))}
       </div>

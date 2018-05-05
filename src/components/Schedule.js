@@ -33,7 +33,6 @@ export class Schedule extends React.Component {
 
   _createFixtures = () => {
     let { teams, revange } = this.props;
-    revange = true;
     let fixtures = robin(teams.length, teams).map(function(games, i) {
       return {
         id: i + 1,

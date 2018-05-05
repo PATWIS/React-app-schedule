@@ -212,10 +212,15 @@ class App extends React.Component {
           )}
 
         {typeOfTournament === "groups&play-off" && (
-          <Groups teams={teams} numOfGroups={numOfGroups} />
+          <Groups
+            submitted={submitted}
+            teams={teams}
+            numOfGroups={numOfGroups}
+            handler={this.setResult}
+          />
         )}
 
-        {submitted && <Schedule teams={teams} handler={this.setResult} />}
+        {/*submitted && <Schedule teams={teams} handler={this.setResult} />*/}
       </div>
     );
   }
